@@ -176,7 +176,7 @@ items:
       tsb.tetrate.io/organization: tetrate
       tsb.tetrate.io/tenant: cms
       tsb.tetrate.io/workspace: bookinfo-ws
-      tsb.tetrate.io/gatewayGroup: bookinfo-gateway
+      tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
     hosts:
       - reviews
@@ -217,7 +217,7 @@ items:
       tsb.tetrate.io/organization: tetrate
       tsb.tetrate.io/tenant: cms
       tsb.tetrate.io/workspace: bookinfo-ws
-      tsb.tetrate.io/gatewayGroup: bookinfo-gateway
+      tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
     hosts:
     - ratings
@@ -253,7 +253,7 @@ items:
       tsb.tetrate.io/organization: tetrate
       tsb.tetrate.io/tenant: cms
       tsb.tetrate.io/workspace: bookinfo-ws
-      tsb.tetrate.io/gatewayGroup: bookinfo-gateway
+      tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
     hosts:
     - details
