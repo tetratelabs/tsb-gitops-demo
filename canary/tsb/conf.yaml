@@ -154,9 +154,6 @@ items:
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
     host: reviews
-    trafficPolicy:
-      loadBalancer:
-        simple: RANDOM
     subsets:
     - name: stable
       labels:

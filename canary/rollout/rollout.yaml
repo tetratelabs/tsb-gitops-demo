@@ -18,13 +18,11 @@ spec:
           version: canary
         labels:
           version: canary
-          service.istio.io/canonical-revision: canary
       stableMetadata:
         annotations:
           version: stable
         labels:
           version: stable
-          service.istio.io/canonical-revision: stable
       trafficRouting:
         istio:
           virtualService: 
