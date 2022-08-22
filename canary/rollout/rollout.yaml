@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: review-rollout
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: reviews
+  workloadRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: reviews
+  strategy:
+    canary:
+      canaryMetadata:
+        annotations:
+          version: canary
+        labels:
+          version: canary
+          service.istio.io/canonical-revision: canary
+      stableMetadata:
+        annotations:
+          version: stable
+        labels:
+          version: stable
+          service.istio.io/canonical-revision: stable
+      trafficRouting:
+        istio:
+          virtualService: 
+            name: reviews
+          destinationRule:
+            name: reviews    
+            canarySubsetName: canary  
+            stableSubsetName: stable
+      steps:
+      - setWeight: 10
+      - pause: {}
+      - setWeight: 20
+      - pause: {duration: 10}
+      - setWeight: 40
+      - pause: {duration: 10}
+      - setWeight: 60
+      - pause: {duration: 10}
+      - setWeight: 80
+      - pause: {duration: 10}

@@ -1,0 +1,264 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: tsb.tetrate.io/v2
+  kind: Tenant
+  metadata:
+    name: cms
+    annotations: 
+      tsb.tetrate.io/organization: tetrate
+  spec:
+    displayName: cms
+- apiVersion: tsb.tetrate.io/v2
+  kind: Workspace
+  metadata:
+    name: bookinfo-ws
+    annotations: 
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: cms
+  spec:
+    namespaceSelector:
+      names:
+        - "cp-cluster-1/cms-*"
+- apiVersion: gateway.tsb.tetrate.io/v2
+  kind: Group
+  metadata:
+    name: bookinfo-gateway
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/workspace: bookinfo-ws
+  spec:
+    displayName: bookinfo-gateway-group
+    namespaceSelector:
+      names:
+        - "cp-cluster-1/cms-*"
+    configMode: DIRECT
+- apiVersion: traffic.tsb.tetrate.io/v2
+  kind: Group
+  metadata:
+    name: bookinfo-traffic
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/workspace: bookinfo-ws
+  spec:
+    displayName: bookinfo-traffic-group
+    namespaceSelector:
+      names:
+        - "cp-cluster-1/cms-*"
+    configMode: DIRECT
+- apiVersion: security.tsb.tetrate.io/v2
+  kind: Group
+  metadata:
+    name: bookinfo-security
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/workspace: bookinfo-ws
+  spec:
+    displayName: bookinfo-security-group
+    namespaceSelector:
+      names:
+        - "cp-cluster-1/cms-*"
+    configMode: DIRECT
+- apiVersion: install.tetrate.io/v1alpha1
+  kind: IngressGateway
+  metadata:
+    name: tsb-gateway-bookinfo
+  spec:
+    kubeSpec:
+      service:
+        type: LoadBalancer
+- apiVersion: networking.istio.io/v1alpha3
+  kind: Gateway
+  metadata:
+    name: bookinfo-gateway
+    labels:
+      istio.io/rev: tsb
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/workspace: bookinfo-ws
+      tsb.tetrate.io/gatewayGroup: bookinfo-gateway
+  spec:
+    selector:
+      app: tsb-gateway-bookinfo
+    servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+      - bookinfo.tetrate.com
+- apiVersion: networking.istio.io/v1alpha3
+  kind: DestinationRule
+  metadata:
+    name: productpage
+    labels:
+      istio.io/rev: tsb
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/workspace: bookinfo-ws
+      tsb.tetrate.io/trafficGroup: bookinfo-traffic
+  spec:
+    host: productpage
+    subsets:
+    - name: v1
+      labels:
+        version: v1
+- apiVersion: networking.istio.io/v1alpha3
+  kind: VirtualService
+  metadata:
+    name: bookinfo
+    labels:
+      istio.io/rev: tsb
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/workspace: bookinfo-ws
+      tsb.tetrate.io/gatewayGroup: bookinfo-gateway
+  spec:
+    hosts:
+      - "bookinfo.tetrate.com"
+    gateways:
+      - bookinfo-gateway
+    http:
+    - match:
+      - uri:
+          exact: /productpage
+      - uri:
+          prefix: /static
+      - uri:
+          exact: /login
+      - uri:
+          exact: /logout
+      - uri:
+          prefix: /api/v1/products
+      route:
+      - destination:
+          host: productpage
+          port:
+            number: 9080
+- apiVersion: networking.istio.io/v1alpha3
+  kind: DestinationRule
+  metadata:
+    name: reviews
+    labels:
+      istio.io/rev: tsb
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/workspace: bookinfo-ws
+      tsb.tetrate.io/trafficGroup: bookinfo-traffic
+  spec:
+    host: reviews
+    trafficPolicy:
+      loadBalancer:
+        simple: RANDOM
+    subsets:
+    - name: stable
+      labels:
+        app: reviews
+        version: stable
+    - name: canary
+      labels:
+        app: reviews
+        version: canary
+- apiVersion: networking.istio.io/v1alpha3
+  kind: VirtualService
+  metadata:
+    name: reviews
+    labels:
+      istio.io/rev: tsb
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/workspace: bookinfo-ws
+      tsb.tetrate.io/gatewayGroup: bookinfo-gateway
+  spec:
+    hosts:
+      - reviews
+    http:
+    - route:
+      - destination:
+          host: reviews
+          subset: stable
+        weight: 100
+      - destination:
+          host: reviews
+          subset: canary
+        weight: 0
+- apiVersion: networking.istio.io/v1alpha3
+  kind: DestinationRule
+  metadata:
+    name: ratings
+    labels:
+      istio.io/rev: tsb
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/workspace: bookinfo-ws
+      tsb.tetrate.io/trafficGroup: bookinfo-traffic
+  spec:
+    host: ratings
+    subsets:
+    - name: v1
+      labels:
+        version: v1
+- apiVersion: networking.istio.io/v1alpha3
+  kind: VirtualService
+  metadata:
+    name: ratings
+    labels:
+      istio.io/rev: tsb
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/workspace: bookinfo-ws
+      tsb.tetrate.io/gatewayGroup: bookinfo-gateway
+  spec:
+    hosts:
+    - ratings
+    http:
+    - route:
+      - destination:
+          host: ratings
+          subset: v1
+- apiVersion: networking.istio.io/v1alpha3
+  kind: DestinationRule
+  metadata:
+    name: details
+    labels:
+      istio.io/rev: tsb
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/workspace: bookinfo-ws
+      tsb.tetrate.io/trafficGroup: bookinfo-traffic
+  spec:
+    host: details
+    subsets:
+    - name: v1
+      labels:
+        version: v1
+- apiVersion: networking.istio.io/v1alpha3
+  kind: VirtualService
+  metadata:
+    name: details
+    labels:
+      istio.io/rev: tsb
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/workspace: bookinfo-ws
+      tsb.tetrate.io/gatewayGroup: bookinfo-gateway
+  spec:
+    hosts:
+    - details
+    http:
+    - route:
+      - destination:
+          host: details
+          subset: v1
