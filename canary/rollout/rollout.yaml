@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: review-rollout
+  name: reviews-rollout
 spec:
   replicas: 5
   selector:
