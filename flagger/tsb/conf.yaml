@@ -19,7 +19,7 @@ items:
   spec:
     namespaceSelector:
       names:
-        - "app-cluster-1/flagger-bookinfo"
+        - "app-cluster-1/flagger-*"
 - apiVersion: gateway.tsb.tetrate.io/v2
   kind: Group
   metadata:
@@ -32,7 +32,7 @@ items:
     displayName: bookinfo-gateway-group
     namespaceSelector:
       names:
-        - "app-cluster-1/flagger-bookinfo"
+        - "app-cluster-1/flagger-*"
     configMode: DIRECT
 - apiVersion: traffic.tsb.tetrate.io/v2
   kind: Group
@@ -46,7 +46,7 @@ items:
     displayName: bookinfo-traffic-group
     namespaceSelector:
       names:
-        - "app-cluster-1/flagger-bookinfo"
+        - "app-cluster-1/flagger-*"
     configMode: DIRECT
 - apiVersion: security.tsb.tetrate.io/v2
   kind: Group
