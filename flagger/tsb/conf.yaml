@@ -60,7 +60,7 @@ items:
     displayName: bookinfo-security-group
     namespaceSelector:
       names:
-        - "app-cluster-1/flagger-bookinfo"
+        - "app-cluster-1/flagger-*"
     configMode: DIRECT
 - apiVersion: install.tetrate.io/v1alpha1
   kind: IngressGateway
