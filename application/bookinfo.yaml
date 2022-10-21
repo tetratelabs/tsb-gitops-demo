@@ -146,15 +146,18 @@ metadata:
   name: reviews
   labels:
     app: reviews
+    version: stable
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: reviews
+      version: stable
   template:
     metadata:
       labels:
         app: reviews
+        version: stable
         service.istio.io/canonical-revision: stable
     spec:
       serviceAccountName: bookinfo-reviews
