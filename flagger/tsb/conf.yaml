@@ -4,35 +4,35 @@ items:
 - apiVersion: tsb.tetrate.io/v2
   kind: Tenant
   metadata:
-    name: flagger
+    name: bookinfo
     annotations: 
       tsb.tetrate.io/organization: tetrate
   spec:
-    displayName: flagger
+    displayName: bookinfo
 - apiVersion: tsb.tetrate.io/v2
   kind: Workspace
   metadata:
     name: bookinfo-ws
     annotations: 
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: flagger
+      tsb.tetrate.io/tenant: bookinfo
   spec:
     namespaceSelector:
       names:
-        - "app-cluster-1/flagger-*"
+        - "cp-cluster-1/bookinfo"
 - apiVersion: gateway.tsb.tetrate.io/v2
   kind: Group
   metadata:
     name: bookinfo-gateway
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: flagger
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
   spec:
     displayName: bookinfo-gateway-group
     namespaceSelector:
       names:
-        - "app-cluster-1/flagger-*"
+        - "cp-cluster-1/bookinfo"
     configMode: DIRECT
 - apiVersion: traffic.tsb.tetrate.io/v2
   kind: Group
@@ -40,13 +40,13 @@ items:
     name: bookinfo-traffic
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: flagger
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
   spec:
     displayName: bookinfo-traffic-group
     namespaceSelector:
       names:
-        - "app-cluster-1/flagger-*"
+        - "cp-cluster-1/bookinfo"
     configMode: DIRECT
 - apiVersion: security.tsb.tetrate.io/v2
   kind: Group
@@ -54,20 +54,18 @@ items:
     name: bookinfo-security
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: flagger
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
   spec:
     displayName: bookinfo-security-group
     namespaceSelector:
       names:
-        - "app-cluster-1/flagger-*"
+        - "cp-cluster-1/bookinfo"
     configMode: DIRECT
 - apiVersion: install.tetrate.io/v1alpha1
   kind: IngressGateway
   metadata:
-    name: tsb-gateway-flagger-bookinfo
-    annotations:
-      cloud.google.com/load-balancer-type: "Internal"
+    name: tsb-gateway-bookinfo
   spec:
     kubeSpec:
       service:
@@ -75,24 +73,24 @@ items:
 - apiVersion: networking.istio.io/v1alpha3
   kind: Gateway
   metadata:
-    name: flagger-bookinfo-gateway
+    name: bookinfo-gateway
     labels:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: flagger
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/gatewayGroup: bookinfo-gateway
   spec:
     selector:
-      app: tsb-gateway-flagger-bookinfo
+      app: tsb-gateway-bookinfo
     servers:
     - port:
         number: 80
         name: http
         protocol: HTTP
       hosts:
-      - flagger-bookinfo.tetrate.com
+      - bookinfo.tetrate.com
 - apiVersion: networking.istio.io/v1alpha3
   kind: DestinationRule
   metadata:
@@ -101,7 +99,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: flagger
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
@@ -118,14 +116,14 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: flagger
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/gatewayGroup: bookinfo-gateway
   spec:
     hosts:
-      - "flagger-bookinfo.tetrate.com"
+      - "bookinfo.tetrate.com"
     gateways:
-      - flagger-bookinfo-gateway
+      - bookinfo-gateway
     http:
     - match:
       - uri:
@@ -151,7 +149,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: flagger
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
@@ -160,6 +158,11 @@ items:
     - name: stable
       labels:
         app: reviews
+        version: stable
+    - name: canary
+      labels:
+        app: reviews
+        version: canary
 - apiVersion: networking.istio.io/v1alpha3
   kind: VirtualService
   metadata:
@@ -168,7 +171,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: flagger
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
@@ -180,6 +183,10 @@ items:
           host: reviews
           subset: stable
         weight: 100
+      - destination:
+          host: reviews
+          subset: canary
+        weight: 0
 - apiVersion: networking.istio.io/v1alpha3
   kind: DestinationRule
   metadata:
@@ -188,7 +195,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: flagger
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
@@ -205,7 +212,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: flagger
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
@@ -224,7 +231,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: flagger
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
@@ -241,7 +248,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: flagger
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:

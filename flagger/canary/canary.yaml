@@ -2,7 +2,7 @@ apiVersion: flagger.app/v1beta1
 kind: Canary
 metadata:
   name: reviews-rollout
-  namespace: flagger-bookinfo
+  namespace: bookinfo
 spec:
   # deployment reference
   targetRef:

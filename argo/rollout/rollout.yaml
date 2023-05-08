@@ -13,6 +13,13 @@ spec:
     name: reviews
   strategy:
     canary:
+      analysis:
+        templates:
+        - templateName: apdex
+        startingStep: 2
+        args:
+        - name: service-name
+          value: guestbook-svc.default.svc.cluster.local
       canaryMetadata:
         annotations:
           version: canary
@@ -35,7 +42,7 @@ spec:
             stableSubsetName: stable
       steps:
       - setWeight: 10
-      - pause: {}
+      - pause: {duration: 10}
       - setWeight: 20
       - pause: {duration: 10}
       - setWeight: 40

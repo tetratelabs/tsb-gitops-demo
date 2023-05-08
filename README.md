@@ -4,6 +4,5 @@ This repository contains configurations for demoing TSB GitOps support integrate
 
 | Application | Description |
 |-------------|-------------|
-| [bookinfo](application/) | Istio bookinfo sample application |
-| [canary](canary/) | Demonstrates canary deployments integrations using [Argo Rollouts](https://argoproj.github.io/argo-rollouts/)
+| [argo](argo/) | Demonstrates canary deployments integrations using [Argo Rollouts](https://argoproj.github.io/argo-rollouts/)
 | [flagger](flagger/) | Demonstrates canary deployments integrations using [Flagger](https://docs.flagger.app/tutorials/istio-progressive-delivery)
