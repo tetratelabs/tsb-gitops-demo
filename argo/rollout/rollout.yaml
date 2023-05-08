@@ -16,10 +16,9 @@ spec:
       analysis:
         templates:
         - templateName: apdex
-        startingStep: 2
         args:
         - name: service-name
-          value: guestbook-svc.default.svc.cluster.local
+          value: reviews.bookinfo.svc.cluster.local
       canaryMetadata:
         annotations:
           version: canary
