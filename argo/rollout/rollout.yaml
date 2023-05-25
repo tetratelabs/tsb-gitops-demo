@@ -13,12 +13,6 @@ spec:
     name: reviews
   strategy:
     canary:
-      analysis:
-        templates:
-        - templateName: apdex
-        args:
-        - name: service-name
-          value: reviews.bookinfo.svc.cluster.local
       canaryMetadata:
         annotations:
           version: canary
@@ -42,6 +36,12 @@ spec:
       steps:
       - setWeight: 10
       - pause: {duration: 10}
+      - analysis:
+          templates:
+          - templateName: apdex
+          args:
+          - name: service-name
+            value: reviews.bookinfo.svc.cluster.local
       - setWeight: 20
       - pause: {duration: 10}
       - setWeight: 40
