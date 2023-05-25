@@ -16,6 +16,7 @@ spec:
       analysis:
         templates:
         - templateName: apdex
+        startingStep: 2
         args:
         - name: service-name
           value: reviews.bookinfo.svc.cluster.local

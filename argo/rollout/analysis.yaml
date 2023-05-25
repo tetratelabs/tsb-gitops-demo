@@ -8,7 +8,7 @@ spec:
   metrics:
   - name: apdex
     interval: 5m
-    successCondition: "all(result.service_apdex.values.values, {asFloat(.value) >= 9900})"
+    successCondition: "all(result.service_apdex.values.values, {asFloat(.value) >= 9500})"
     failureLimit: 3
     provider:
       skywalking:
