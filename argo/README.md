@@ -364,7 +364,7 @@ You can monitor the health of each service instance of both canary and stable po
 
 ![metrics for both stable and canary](./assets/service-metrics.png)
 
-Service topology shows only `reviews-canary` is calling `details-v1` service
+Service topology shows only `reviews-canary` is calling `ratings` service
 
 ![service topology which shows only reviews-canary is calling details-v1 service](./assets/topology.png)
 
