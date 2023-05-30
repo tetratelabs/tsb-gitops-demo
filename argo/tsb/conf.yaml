@@ -4,35 +4,35 @@ items:
 - apiVersion: tsb.tetrate.io/v2
   kind: Tenant
   metadata:
-    name: cms
+    name: bookinfo
     annotations: 
       tsb.tetrate.io/organization: tetrate
   spec:
-    displayName: cms
+    displayName: bookinfo
 - apiVersion: tsb.tetrate.io/v2
   kind: Workspace
   metadata:
     name: bookinfo-ws
     annotations: 
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/tenant: bookinfo
   spec:
     namespaceSelector:
       names:
-        - "cp-cluster-1/cms-bookinfo"
+        - "cp-cluster-1/bookinfo"
 - apiVersion: gateway.tsb.tetrate.io/v2
   kind: Group
   metadata:
     name: bookinfo-gateway
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
   spec:
     displayName: bookinfo-gateway-group
     namespaceSelector:
       names:
-        - "cp-cluster-1/cms-bookinfo"
+        - "cp-cluster-1/bookinfo"
     configMode: DIRECT
 - apiVersion: traffic.tsb.tetrate.io/v2
   kind: Group
@@ -40,13 +40,13 @@ items:
     name: bookinfo-traffic
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
   spec:
     displayName: bookinfo-traffic-group
     namespaceSelector:
       names:
-        - "cp-cluster-1/cms-bookinfo"
+        - "cp-cluster-1/bookinfo"
     configMode: DIRECT
 - apiVersion: security.tsb.tetrate.io/v2
   kind: Group
@@ -54,13 +54,13 @@ items:
     name: bookinfo-security
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
   spec:
     displayName: bookinfo-security-group
     namespaceSelector:
       names:
-        - "cp-cluster-1/cms-bookinfo"
+        - "cp-cluster-1/bookinfo"
     configMode: DIRECT
 - apiVersion: install.tetrate.io/v1alpha1
   kind: IngressGateway
@@ -78,7 +78,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/gatewayGroup: bookinfo-gateway
   spec:
@@ -99,7 +99,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
@@ -116,7 +116,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/gatewayGroup: bookinfo-gateway
   spec:
@@ -149,7 +149,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
@@ -171,7 +171,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
@@ -195,7 +195,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
@@ -212,7 +212,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
@@ -231,7 +231,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
@@ -248,7 +248,7 @@ items:
       istio.io/rev: tsb
     annotations:
       tsb.tetrate.io/organization: tetrate
-      tsb.tetrate.io/tenant: cms
+      tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:

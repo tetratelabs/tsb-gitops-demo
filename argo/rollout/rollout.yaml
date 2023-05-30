@@ -13,6 +13,13 @@ spec:
     name: reviews
   strategy:
     canary:
+      analysis:
+        templates:
+        - templateName: apdex
+        startingStep: 2
+        args:
+        - name: service-name
+          value: canary|reviews|bookinfo|cp-cluster-1|-
       canaryMetadata:
         annotations:
           version: canary
@@ -35,12 +42,12 @@ spec:
             stableSubsetName: stable
       steps:
       - setWeight: 10
-      - pause: {}
+      - pause: {duration: 10m}
       - setWeight: 20
-      - pause: {duration: 10}
+      - pause: {duration: 5m}
       - setWeight: 40
-      - pause: {duration: 10}
+      - pause: {duration: 5m}
       - setWeight: 60
-      - pause: {duration: 10}
+      - pause: {duration: 5m}
       - setWeight: 80
-      - pause: {duration: 10}
+      - pause: {duration: 5m}
