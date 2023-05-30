@@ -1,6 +1,6 @@
-# Canary deployments & Progressive delivery automation using ArgoRollout and Skywalking
+# Canary deployments & Progressive delivery automation using ArgoRollout and SkyWalking
 
-This document describes how you can configure ArgoCD & integrate ArgoRollout with TSB GitOps support and use Skywalking as the metrics provider for canary deployments and progressive delivery automation.
+This document describes how you can configure ArgoCD & integrate ArgoRollout with TSB GitOps support and use SkyWalking as the metrics provider for canary deployments and progressive delivery automation.
 
 Before you get started, make sure: <br />
 ✓ [ArgoCD](https://argo-cd.readthedocs.io/en/stable/getting_started/) is installed in your cluster and ArgoCD CLI is configured to connect to your ArgoCD server <br />
@@ -67,10 +67,10 @@ Since ArgoRollout require you to make some modifications on VirtualService & Des
 * Please make sure the version labels eg: `version: canary/stable` has been added to `canaryMetadata` according to Istio convention for TSB to recognize the subsets and plot the metrics in service dashboard.  
 * When using Istio direct mode resources with GitOps, there is an additional label `istio.io/rev: "tsb"` that needs to be added to the resources. Please refer [here](./gitops.mdx#using-istio-direct-mode-resources) for more details.
 
-Create a `bookinfo-tsb-conf` app by importing the TSB configurations from [tsb-gitops-demo/canary/tsb/conf.yaml](https://github.com/tetrateio/tsb-gitops-demo/blob/main/canary/tsb/conf.yaml). You can also choose to keep it in the same repo. 
+Create a `bookinfo-tsb-conf` app by importing the TSB configurations from [tsb-gitops-demo/argo/tsb/conf.yaml](https://github.com/tetrateio/tsb-gitops-demo/blob/main/argo/tsb/conf.yaml). You can also choose to keep it in the same repo. 
 
 ```bash{promptUser: "alice"}
-argocd app create bookinfo-tsb-conf --repo https://github.com/tetrateio/tsb-gitops-demo.git --path canary/tsb --dest-server https://kubernetes.default.svc --dest-namespace bookinfo
+argocd app create bookinfo-tsb-conf --repo https://github.com/tetrateio/tsb-gitops-demo.git --path argo/tsb --dest-server https://kubernetes.default.svc --dest-namespace bookinfo
 ```
 
 Check the status of TSB resources
@@ -209,11 +209,11 @@ spec:
 
 ```
 
-## Configure Canary Analysis Template with Skylwaking
+## Configure Canary Analysis Template using SkyWalking
 
-[Skywalking](https://skywalking.apache.org/) as an obeservability component embedded within TSB Infra can be used as a metrics provider for facilitating canary deployment analysis and drive auto promotion/rollback based on the analysis. Please refer [Analysis & Progressive delivery in ArgoRollout](https://argoproj.github.io/argo-rollouts/features/analysis/) and how [Skywalking](https://argoproj.github.io/argo-rollouts/analysis/skywalking/) can be used as a metrics provider for more details. 
+[SkyWalking](https://SkyWalking.apache.org/) as an obeservability component embedded within TSB Infra can be used as a metrics provider for facilitating canary deployment analysis drive auto promotion/rollout based on the analysis. Please refer [Analysis & Progressive delivery in ArgoRollout](https://argoproj.github.io/argo-rollouts/features/analysis/) and how [SkyWalking](https://argoproj.github.io/argo-rollouts/analysis/SkyWalking/) can be used as a metrics provider for more details. 
 
-* Create an [analysis](/argo/rollout/analysis.yaml) template using `skywalking` as the provider to drive auto promotion/rollback based on the deployment analysis.
+* Create canary [analysis](/argo/rollout/analysis.yaml) template using `SkyWalking` as the provider to drive auto promotion/rollback based on the deployment analysis.
 * Success condition is derived using Apdex score. Read more about [the Apdex score for measuring service mesh health](https://tetrate.io/blog/the-apdex-score-for-measuring-service-mesh-health/) 
 Configure  
 * `service-name` needs to be configured as an argument for `analysis` template. Please follow the [SPM noun convention](https://github.com/tetrateio/SPM/blob/main/doc/spm-nouns.md#service-and-subset) to query the metrics. 
