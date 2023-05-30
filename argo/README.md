@@ -211,9 +211,9 @@ spec:
 
 ## Configure Canary Analysis Template with Skylwaking
 
-[Skywalking](https://skywalking.apache.org/) as an obeservability component embedded within TSB Infra can be used as a metrics provider for facilitating canary deployment analysis drive auto promotion/rollout based on the analysis. Please refer [Analysis & Progressive delivery in ArgoRollout](https://argoproj.github.io/argo-rollouts/features/analysis/) and how [Skywalking](https://argoproj.github.io/argo-rollouts/analysis/skywalking/) can be used as a metrics provider for more details. 
+[Skywalking](https://skywalking.apache.org/) as an obeservability component embedded within TSB Infra can be used as a metrics provider for facilitating canary deployment analysis and drive auto promotion/rollback based on the analysis. Please refer [Analysis & Progressive delivery in ArgoRollout](https://argoproj.github.io/argo-rollouts/features/analysis/) and how [Skywalking](https://argoproj.github.io/argo-rollouts/analysis/skywalking/) can be used as a metrics provider for more details. 
 
-* Create an analysis template using skywalking as the provider to drive auto promotion/rollout based on the deployment analysis.
+* Create an [analysis](/argo/rollout/analysis.yaml) template using `skywalking` as the provider to drive auto promotion/rollback based on the deployment analysis.
 * Success condition is derived using Apdex score. Read more about [the Apdex score for measuring service mesh health](https://tetrate.io/blog/the-apdex-score-for-measuring-service-mesh-health/) 
 Configure  
 * `service-name` needs to be configured as an argument for `analysis` template. Please follow the [SPM noun convention](https://github.com/tetrateio/SPM/blob/main/doc/spm-nouns.md#service-and-subset) to query the metrics. 
@@ -281,7 +281,7 @@ argoproj.io  Rollout           bookinfo   reviews-rollout  Synced  Healthy      
 
 ## Trigger Canary Deployment
 
-Update the `reviews` service deployment image to v2 version. This will immediately trigger a canary deployment of `reviews` v2 and will modify the traffic percentage as 90/10.
+Update the `reviews` service deployment image to `v2` version. This will immediately trigger a canary deployment of `reviews` v2 and will modify the traffic percentage as 90/10.
 
 ```bash{promptUser: "alice"}
 kubectl argo rollouts set image reviews-rollout reviews=docker.io/istio/examples-bookinfo-reviews-v2:1.16.4 -n bookinfo
@@ -363,6 +363,8 @@ You can monitor the health of each service instance of both canary and stable po
 ![service dashboard which shows both stable and canary subsets](./assets/subsets.png)
 
 ![metrics for both stable and canary](./assets/service-metrics.png)
+
+Service topology shows only `reviews-canary` is calling `details-v1` service
 
 ![service topology which shows only reviews-canary is calling details-v1 service](./assets/topology.png)
 
