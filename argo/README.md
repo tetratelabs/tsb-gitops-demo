@@ -211,12 +211,16 @@ spec:
 
 ## Configure Canary Analysis Template using SkyWalking
 
-[SkyWalking](https://SkyWalking.apache.org/) as an obeservability component embedded within TSB Infra can be used as a metrics provider for facilitating canary deployment analysis drive auto promotion/rollout based on the analysis. Please refer [Analysis & Progressive delivery in ArgoRollout](https://argoproj.github.io/argo-rollouts/features/analysis/) and how [SkyWalking](https://argoproj.github.io/argo-rollouts/analysis/SkyWalking/) can be used as a metrics provider for more details. 
+[SkyWalking](https://skywalking.apache.org/) as an observability component embedded within TSB Infra can be used as a metrics provider for facilitating canary deployment analysis.
+Please refer [Analysis & Progressive delivery in ArgoRollout](https://argoproj.github.io/argo-rollouts/features/analysis/) and how [SkyWalking](https://argoproj.github.io/argo-rollouts/analysis/skywalking/) can be used as a metrics provider for more details.
 
-* Create canary [analysis](/argo/rollout/analysis.yaml) template using `SkyWalking` as the provider to drive auto promotion/rollback based on the deployment analysis.
-* Success condition is derived using Apdex score. Read more about [the Apdex score for measuring service mesh health](https://tetrate.io/blog/the-apdex-score-for-measuring-service-mesh-health/) 
-Configure  
-* `service-name` needs to be configured as an argument for `analysis` template. Please follow the [SPM noun convention](https://github.com/tetrateio/SPM/blob/main/doc/spm-nouns.md#service-and-subset) to query the metrics. 
+* Create canary `analysis` template using `skywalking` as the metrics provider to drive auto promotion/rollback based on the deployment analysis.
+* SkyWaling metrics can be fetched by connecting to `OAP` service graphql endpoint i.e `http://oap.istio-system:12800` installed on TSB ControlPlane Cluster.
+* Success condition is derived using Apdex score. Please read [Apdex score for measuring service mesh health](https://tetrate.io/blog/the-apdex-score-for-measuring-service-mesh-health/) for more details.
+* Subset name of canary deployment needs to be configured as an argument `service-name` in the `analysis` template.
+* Since we are using `reviews` service here, please use `canary|reviews|bookinfo|cp-cluster-1|-` in the format of `subset|service name|namespace name|cluster name|env name` based on SPM noun convention.
+* Please follow the [SPM noun convention](https://github.com/tetrateio/SPM/blob/main/doc/spm-nouns.md#service-and-subset) for more details.
+
 
 [analysis.yaml](/argo/rollout/analysis.yaml)
 
