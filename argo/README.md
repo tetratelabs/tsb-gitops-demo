@@ -137,14 +137,14 @@ curl -v "http://bookinfo.tetrate.com/api/v1/products/1/reviews" \
 
 ## Setup ArgoRollout 
 
-ArgoRollout provides multiple options to migrate your existing kubernetes deployment object into Argo rollout object. You can either convert an existing deployment object to rollout or you can refer your existing deployment from a rollout object using `workloadRef`.
+ArgoRollout provides multiple options to migrate your existing kubernetes deployment object into Argo's `Rollout` object. You can either convert an existing k8s deployment object to `Rollout` or you can refer your existing k8s deployment from a `Rollout` object using `workloadRef`.
 We will be following the latter approach in this example. 
 
 In this example we will be doing a canary deployment of `reviews` service to demonstrate `rollout` object configurations and how it is facilitating the traffic shifting to both primary and canary deployment of `reviews` service.
 
 * Create a `Rollout` resource and refer your existing deployment using `workloadRef`.
 * Make sure selector matchLabels has been configured based on your k8s application deployment manifest.
-* Configure rollout strategy to use `canary` with subset level traffic splitting.
+* Configure `Rollout` strategy to use `canary` with subset level traffic splitting.
 * Configure `canaryMetadata` to inject labels and annotations on canary and stable pods.
 * Configure Istio `virtualService` and `destinationRule` based on TSB configuration.
 * Once the `Rollout` object is created, it will spin up the required number of pods side-by-side along with the Deployment pods and then you can scale down your existing deployment to `0` by changing the replicas.
@@ -219,7 +219,6 @@ Please refer [Analysis & Progressive delivery in ArgoRollout](https://argoproj.g
 * Success condition is derived using Apdex score. Please read [Apdex score for measuring service mesh health](https://tetrate.io/blog/the-apdex-score-for-measuring-service-mesh-health/) for more details.
 * Subset name of canary deployment needs to be configured as an argument `service-name` in the `analysis` template.
 * Since we are using `reviews` service here, please use `canary|reviews|bookinfo|cp-cluster-1|-` in the format of `subset|service name|namespace name|cluster name|env name` based on SPM noun convention.
-* Please follow the [SPM noun convention](https://github.com/tetrateio/SPM/blob/main/doc/spm-nouns.md#service-and-subset) for more details.
 
 
 [analysis.yaml](/argo/rollout/analysis.yaml)
