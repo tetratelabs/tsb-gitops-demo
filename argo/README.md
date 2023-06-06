@@ -10,10 +10,10 @@ Before you get started, make sure: <br />
 ## Create an Application from a Git repository
 
 Create a sample application using the below command. An example repository containing Istio's [bookinfo](https://istio.io/latest/docs/examples/bookinfo/) application and TSB configurations is available at [https://github.com/tetrateio/tsb-gitops-demo](https://github.com/tetrateio/tsb-gitops-demo).
-You can either use ArgoCD CLI or their web UI to import application configurations directly from Git.  
+You can either use Argo CD CLI or their web UI to import application configurations directly from Git.
 
 ```bash{promptUser: "alice"}
-argocd app create bookinfo-app --repo https://github.com/tetrateio/tsb-gitops-demo.git --path application --dest-server https://kubernetes.default.svc --dest-namespace bookinfo
+argocd app create bookinfo-app --repo https://github.com/tetrateio/tsb-gitops-demo.git --path application --dest-server https://kubernetes.default.svc --dest-namespace bookinfo --sync-policy automated --auto-prune
 ```
 
 Check the status of your application
@@ -29,27 +29,27 @@ Server:             https://kubernetes.default.svc
 Namespace:          bookinfo
 URL:                https://localhost:8080/applications/bookinfo-app
 Repo:               https://github.com/tetrateio/tsb-gitops-demo.git
-Target:             skw-integration
-Path:               argo/app
+Target:
+Path:               application
 SyncWindow:         Sync Allowed
-Sync Policy:        <none>
-Sync Status:        OutOfSync from skw-integration (1ba8e2d)
+Sync Policy:        Automated (Prune)
+Sync Status:        Synced to  (04f154e)
 Health Status:      Healthy
 
-GROUP  KIND            NAMESPACE  NAME                  STATUS     HEALTH   HOOK  MESSAGE
-       Namespace       bookinfo   bookinfo              Running    Synced         namespace/bookinfo created
-       ServiceAccount  bookinfo   bookinfo-details      Synced                    serviceaccount/bookinfo-details created
-       ServiceAccount  bookinfo   bookinfo-productpage  Synced                    serviceaccount/bookinfo-productpage created
-       ServiceAccount  bookinfo   bookinfo-ratings      Synced                    serviceaccount/bookinfo-ratings created
-       ServiceAccount  bookinfo   bookinfo-reviews      Synced                    serviceaccount/bookinfo-reviews created
-       Service         bookinfo   productpage           Synced     Healthy        service/productpage created
-       Service         bookinfo   details               Synced     Healthy        service/details created
-       Service         bookinfo   ratings               Synced     Healthy        service/ratings created
-       Service         bookinfo   reviews               Synced     Healthy        service/reviews created
-apps   Deployment      bookinfo   ratings-v1            Synced     Healthy        deployment.apps/ratings-v1 created
-apps   Deployment      bookinfo   productpage-v1        Synced     Healthy        deployment.apps/productpage-v1 created
-apps   Deployment      bookinfo   reviews               OutOfSync  Healthy        deployment.apps/reviews created
-apps   Deployment      bookinfo   details-v1            Synced     Healthy        deployment.apps/details-v1 created
+GROUP  KIND            NAMESPACE  NAME                  STATUS   HEALTH   HOOK  MESSAGE
+       Namespace       bookinfo   bookinfo              Running  Synced         namespace/bookinfo created
+       ServiceAccount  bookinfo   bookinfo-ratings      Synced                  serviceaccount/bookinfo-ratings created
+       ServiceAccount  bookinfo   bookinfo-details      Synced                  serviceaccount/bookinfo-details created
+       ServiceAccount  bookinfo   bookinfo-reviews      Synced                  serviceaccount/bookinfo-reviews created
+       ServiceAccount  bookinfo   bookinfo-productpage  Synced                  serviceaccount/bookinfo-productpage created
+       Service         bookinfo   details               Synced   Healthy        service/details created
+       Service         bookinfo   ratings               Synced   Healthy        service/ratings created
+       Service         bookinfo   reviews               Synced   Healthy        service/reviews created
+       Service         bookinfo   productpage           Synced   Healthy        service/productpage created
+apps   Deployment      bookinfo   productpage-v1        Synced   Healthy        deployment.apps/productpage-v1 created
+apps   Deployment      bookinfo   reviews               Synced   Healthy        deployment.apps/reviews created
+apps   Deployment      bookinfo   details-v1            Synced   Healthy        deployment.apps/details-v1 created
+apps   Deployment      bookinfo   ratings-v1            Synced   Healthy        deployment.apps/ratings-v1 created
        Namespace                  bookinfo              Synced
 
 ```
@@ -61,11 +61,11 @@ You can make necessary changes to `Rollout` object and TSB mesh configuration of
 
 ## TSB Configuration Setup
 
-Since ArgoRollout require you to make some modifications on VirtualService & DestinationRule object according to their Canary deployment strategy convention for Istio, You can use TSB `DIRECT` mode configuration to achieve the desired result.
+Since Argo Rollout require you to make some modifications on Istio `VirtualService` & `DestinatrionRule` object according to their canary deployment strategy convention for Istio, You can use TSB `DIRECT` mode configuration to achieve the desired result.
 
-* According to ArgoRollout convention, 2 subsets named `stable` and `canary` has been added to subsets with necessary labels to identify `canary` and `stable` pods which ArgoRollout inject based on `canaryMetadata`. 
-* Please make sure the version labels eg: `version: canary/stable` has been added to `canaryMetadata` according to Istio convention for TSB to recognize the subsets and plot the metrics in service dashboard.  
-* When using Istio direct mode resources with GitOps, there is an additional label `istio.io/rev: "tsb"` that needs to be added to the resources. Please refer [here](./gitops.mdx#using-istio-direct-mode-resources) for more details.
+* According to Argo Rollout convention, 2 subsets named `stable` and `canary` needs to be configured with necessary labels in TSB direct mode resources like `VirtualService` & `DestinationRule` to identify `canary` and `stable` pods.
+* Please make sure the version labels eg: `version: canary/stable` has been configured according to Istio convention for TSB to recognize the subsets and plot the metrics in service dashboard.
+* When using TSB direct mode resources with GitOps, there is an additional label `istio.io/rev: "tsb"` that needs to be added to the resources. Please refer [here](./gitops.mdx#using-istio-direct-mode-resources) for more details.
 
 Create a `bookinfo-tsb-conf` app by importing the TSB configurations from [tsb-gitops-demo/argo/tsb/conf.yaml](https://github.com/tetrateio/tsb-gitops-demo/blob/main/argo/tsb/conf.yaml). You can also choose to keep it in the same repo. 
 
@@ -84,27 +84,27 @@ Server:             https://kubernetes.default.svc
 Namespace:          bookinfo
 URL:                https://localhost:8080/applications/bookinfo-tsb-conf
 Repo:               https://github.com/tetrateio/tsb-gitops-demo.git
-Target:             skw-integration
+Target:
 Path:               argo/tsb
 SyncWindow:         Sync Allowed
-Sync Policy:        <none>
-Sync Status:        OutOfSync from skw-integration (1ba8e2d)
+Sync Policy:        Automated (Prune)
+Sync Status:        Synced to  (04f154e)
 Health Status:      Healthy
 
 GROUP                    KIND             NAMESPACE     NAME                               STATUS     HEALTH  HOOK  MESSAGE
-networking.istio.io      VirtualService   bookinfo      bookinfo                           Synced                   virtualservice.networking.istio.io/bookinfo created
 tsb.tetrate.io           Tenant           bookinfo      bookinfo                           Synced                   tenant.tsb.tetrate.io/bookinfo unchanged
-networking.istio.io      Gateway          bookinfo      bookinfo-gateway                   Synced                   gateway.networking.istio.io/bookinfo-gateway unchanged
-traffic.tsb.tetrate.io   Group            bookinfo      bookinfo-traffic                   Synced                   group.traffic.tsb.tetrate.io/bookinfo-traffic unchanged
-security.tsb.tetrate.io  Group            bookinfo      bookinfo-security                  Synced                   group.security.tsb.tetrate.io/bookinfo-security unchanged
+networking.istio.io      VirtualService   bookinfo      bookinfo                           Synced                   virtualservice.networking.istio.io/bookinfo unchanged
 gateway.tsb.tetrate.io   Group            bookinfo      bookinfo-gateway                   Synced                   group.gateway.tsb.tetrate.io/bookinfo-gateway unchanged
+networking.istio.io      Gateway          bookinfo      bookinfo-gateway                   Synced                   gateway.networking.istio.io/bookinfo-gateway unchanged
+security.tsb.tetrate.io  Group            bookinfo      bookinfo-security                  Synced                   group.security.tsb.tetrate.io/bookinfo-security unchanged
+traffic.tsb.tetrate.io   Group            bookinfo      bookinfo-traffic                   Synced                   group.traffic.tsb.tetrate.io/bookinfo-traffic unchanged
 tsb.tetrate.io           Workspace        bookinfo      bookinfo-ws                        Synced                   workspace.tsb.tetrate.io/bookinfo-ws unchanged
 networking.istio.io      VirtualService   bookinfo      details                            Synced                   virtualservice.networking.istio.io/details unchanged
-networking.istio.io      DestinationRule  bookinfo      productpage                        Synced                   destinationrule.networking.istio.io/productpage unchanged
 networking.istio.io      DestinationRule  bookinfo      details                            Synced                   destinationrule.networking.istio.io/details unchanged
+networking.istio.io      DestinationRule  bookinfo      productpage                        Synced                   destinationrule.networking.istio.io/productpage unchanged
 networking.istio.io      VirtualService   bookinfo      ratings                            Synced                   virtualservice.networking.istio.io/ratings unchanged
-networking.istio.io      DestinationRule  bookinfo      reviews                            Synced                   destinationrule.networking.istio.io/reviews unchanged
 networking.istio.io      DestinationRule  bookinfo      ratings                            Synced                   destinationrule.networking.istio.io/ratings unchanged
+networking.istio.io      DestinationRule  bookinfo      reviews                            Synced                   destinationrule.networking.istio.io/reviews unchanged
 networking.istio.io      VirtualService   bookinfo      reviews                            Synced                   virtualservice.networking.istio.io/reviews unchanged
 install.tetrate.io       IngressGateway   bookinfo      tsb-gateway-bookinfo               Synced                   ingressgateway.install.tetrate.io/tsb-gateway-bookinfo unchanged
 ```
@@ -137,18 +137,21 @@ curl -v "http://bookinfo.tetrate.com/api/v1/products/1/reviews" \
 
 ## Setup ArgoRollout 
 
-ArgoRollout provides multiple options to migrate your existing kubernetes deployment object into Argo's `Rollout` object. You can either convert an existing k8s deployment object to `Rollout` or you can refer your existing k8s deployment from a `Rollout` object using `workloadRef`.
+
+Argo Rollout provides multiple options to migrate your existing kubernetes deployment object into Argo's `Rollout` object. You can either convert an existing k8s deployment object to `Rollout` or you can refer your existing k8s deployment from a `Rollout` object using `workloadRef`.
 We will be following the latter approach in this example. 
 
-In this example we will be doing a canary deployment of `reviews` service to demonstrate `rollout` object configurations and how it is facilitating the traffic shifting to both primary and canary deployment of `reviews` service.
+In this example we will be doing a canary deployment of `reviews` service to demonstrate `Rollout` object configurations and how it is facilitating the traffic shifting to both primary and canary deployment of `reviews` service.
 
 * Create a `Rollout` resource and refer your existing deployment using `workloadRef`.
-* Make sure selector matchLabels has been configured based on your k8s application deployment manifest.
-* Configure `Rollout` strategy to use `canary` with subset level traffic splitting.
-* Configure `canaryMetadata` to inject labels and annotations on canary and stable pods.
-* Configure Istio `virtualService` and `destinationRule` based on TSB configuration.
-* Once the `Rollout` object is created, it will spin up the required number of pods side-by-side along with the Deployment pods and then you can scale down your existing deployment to `0` by changing the replicas.
-* `Rollout` object won't modify your existing Deployment, Traffic would be shifted to the pods managed by `Rollout` object once the subset is updated in `VirtualService`. 
+* Make sure selector `matchLabels` has been configured based on your k8s application deployment manifest.
+* Configure `strategy` as `canary` with subset level traffic splitting.
+* Configure `canaryMetadata` & `stableMetadata` to inject labels and annotations on `canary` and `stable` pods.
+* Please make sure the labels of `canaryMetadata` and `stableMetadata` are consistent with TSB direct mode configurations [here](https://github.com/tetrateio/tsb-gitops-demo/blob/main/argo/tsb/conf.yaml#L157-L165).
+* Configure Istio `virtualService` and `destinationRule` under `trafficRouting` based on the TSB direct mode configurations.
+* Once the `Rollout` object is created, it will spin up the required number of pods side-by-side along with the k8s deployment pods.
+* Once all the `Rollout` pods are up and running, you can scale down your existing k8s deployment to `0` by changing the replicas.
+* `Rollout` object won't modify your existing k8s deployment, Traffic would be shifted to the pods managed by `Rollout` object once the subset is updated in `VirtualService`.
 
 [rollout.yaml](/argo/rollout/rollout.yaml)
 
@@ -211,15 +214,14 @@ spec:
 
 ## Configure Canary Analysis Template using SkyWalking
 
-[SkyWalking](https://skywalking.apache.org/) as an observability component embedded within TSB Infra can be used as a metrics provider for facilitating canary deployment analysis.
-Please refer [Analysis & Progressive delivery in ArgoRollout](https://argoproj.github.io/argo-rollouts/features/analysis/) and how [SkyWalking](https://argoproj.github.io/argo-rollouts/analysis/skywalking/) can be used as a metrics provider for more details.
+[SkyWalking](https://skywalking.apache.org/), an observability component bundled in TSB, can serve as a metrics provider to support canary deployment analysis, enabling automatic promotion or rollback actions
+Please refer [Analysis & Progressive delivery in Argo Rollout](https://argoproj.github.io/argo-rollouts/features/analysis/) and how [SkyWalking](https://argoproj.github.io/argo-rollouts/analysis/skywalking/) can be used as a metrics provider for more details.
 
-* Create canary `analysis` template using `skywalking` as the metrics provider to drive auto promotion/rollback based on the deployment analysis.
-* SkyWaling metrics can be fetched by connecting to `OAP` service graphql endpoint i.e `http://oap.istio-system:12800` installed on TSB ControlPlane Cluster.
+* Create canary `AnalysisTemplate` using `skywalking` as the metrics provider to drive auto promotion/rollback based on the deployment analysis.
+* SkyWalking metrics can be fetched by connecting to `OAP` service graphql endpoint i.e `http://oap.istio-system:12800` installed on TSB ControlPlane Cluster.
 * Success condition is derived using Apdex score. Please read [Apdex score for measuring service mesh health](https://tetrate.io/blog/the-apdex-score-for-measuring-service-mesh-health/) for more details.
 * Subset name of canary deployment needs to be configured as an argument `service-name` in the `analysis` template.
 * Since we are using `reviews` service here, please use `canary|reviews|bookinfo|cp-cluster-1|-` in the format of `subset|service name|namespace name|cluster name|env name` based on SPM noun convention.
-
 
 [analysis.yaml](/argo/rollout/analysis.yaml)
 
@@ -256,7 +258,7 @@ spec:
 Run the below command to create a rollout app
 
 ```bash{promptUser: "alice"}
-argocd app create reviews-rollout --repo https://github.com/tetrateio/tsb-gitops-demo.git --path argo/rollout --dest-server https://kubernetes.default.svc --dest-namespace bookinfo
+argocd app create reviews-rollout --repo https://github.com/tetrateio/tsb-gitops-demo.git --path argo/rollout --dest-server https://kubernetes.default.svc --dest-namespace bookinfo --sync-policy automated --auto-prune
 ```
 
 Check the status
@@ -270,11 +272,11 @@ Server:             https://kubernetes.default.svc
 Namespace:          bookinfo
 URL:                https://localhost:8080/applications/reviews-rollout
 Repo:               https://github.com/tetrateio/tsb-gitops-demo.git
-Target:             skw-integration
+Target:
 Path:               argo/rollout
 SyncWindow:         Sync Allowed
-Sync Policy:        <none>
-Sync Status:        Synced to skw-integration (1ba8e2d)
+Sync Policy:        Automated (Prune)
+Sync Status:        Synced to  (04f154e)
 Health Status:      Healthy
 
 GROUP        KIND              NAMESPACE  NAME             STATUS  HEALTH   HOOK  MESSAGE
@@ -373,7 +375,7 @@ Service topology shows only `reviews-canary` is calling `ratings` service
 
 ## Canary analysis and auto promotion
 
-As we have configured in the `rollout` object, canary `analysis` is going to run from the second phase onwards as it wait for the first phase to complete in 10 minutes to build some metrics. From the second phase onwards, `AnalysisRun` an instantiation of the `AnalysisTemplate` is going to get executed, based on the configured `interval`. For every completed run, based on the status of `succesful` or `failed`, argo decides whether to promote/rollback the canary deployment based on the max `failureLimit` configured in `AnalysisTemplate`.
+As we have configured in the `Rollout` object, canary `analysis` is going to run from the second phase onwards as it wait for the first phase to complete in 10 minutes to build some metrics. From the second phase onwards, `AnalysisRun` i.e an instantiation of the `AnalysisTemplate` is going to get executed, based on the configured `interval`. For every completed run, based on the status of `succesfull` or `failed`, argo decides whether to promote/rollback the canary deployment based on the max `failureLimit` configured in `AnalysisTemplate`.
 
 ### During canary analysis
 
