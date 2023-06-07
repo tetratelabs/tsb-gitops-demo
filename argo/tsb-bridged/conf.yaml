@@ -1,0 +1,135 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: tsb.tetrate.io/v2
+  kind: Tenant
+  metadata:
+    name: bookinfo
+    annotations: 
+      tsb.tetrate.io/organization: tetrate
+  spec:
+    displayName: bookinfo
+- apiVersion: tsb.tetrate.io/v2
+  kind: Workspace
+  metadata:
+    name: bookinfo-ws
+    annotations: 
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: bookinfo
+  spec:
+    namespaceSelector:
+      names:
+        - "cp-cluster-1/bookinfo"
+- apiVersion: gateway.tsb.tetrate.io/v2
+  kind: Group
+  metadata:
+    name: bookinfo-gateway
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: bookinfo
+      tsb.tetrate.io/workspace: bookinfo-ws
+  spec:
+    displayName: bookinfo-gateway-group
+    namespaceSelector:
+      names:
+        - "cp-cluster-1/bookinfo"
+    configMode: BRIDGED
+- apiVersion: traffic.tsb.tetrate.io/v2
+  kind: Group
+  metadata:
+    name: bookinfo-traffic
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: bookinfo
+      tsb.tetrate.io/workspace: bookinfo-ws
+  spec:
+    displayName: bookinfo-traffic-group
+    namespaceSelector:
+      names:
+        - "cp-cluster-1/bookinfo"
+    configMode: BRIDGED
+- apiVersion: security.tsb.tetrate.io/v2
+  kind: Group
+  metadata:
+    name: bookinfo-security
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: bookinfo
+      tsb.tetrate.io/workspace: bookinfo-ws
+  spec:
+    displayName: bookinfo-security-group
+    namespaceSelector:
+      names:
+        - "cp-cluster-1/bookinfo"
+    configMode: BRIDGED
+- apiVersion: install.tetrate.io/v1alpha1
+  kind: IngressGateway
+  metadata:
+    name: tsb-gateway-bookinfo
+  spec:
+    kubeSpec:
+      service:
+        type: LoadBalancer
+- apiVersion: gateway.tsb.tetrate.io/v2
+  kind: IngressGateway
+  metadata:
+    name: bookinfo-gateway
+    labels:
+      istio.io/rev: tsb
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: bookinfo
+      tsb.tetrate.io/workspace: bookinfo-ws
+      tsb.tetrate.io/gatewayGroup: bookinfo-gateway
+  spec:
+    workloadSelector:
+      namespace: bookinfo
+      labels: 
+        app: tsb-gateway-bookinfo
+    http:
+    - hostname: bookinfo.tetrate.com
+      name: tsb-bookinfo
+      port: 80
+      routing:
+        rules:
+          - match:
+            - uri:
+                exact: /productpage
+            - uri:
+                prefix: /static
+            - uri:
+                exact: /login
+            - uri:
+                exact: /logout
+            - uri:
+                prefix: /api/v1/products
+            route:
+              host: "bookinfo/productpage.bookinfo.svc.cluster.local"
+              port: 9080
+- apiVersion: traffic.xcp.tetrate.io/v2
+  kind: ServiceRoute
+  metadata:
+    name: reviews
+    labels:
+      istio.io/rev: tsb
+    annotations:
+      tsb.tetrate.io/organization: tetrate
+      tsb.tetrate.io/tenant: bookinfo
+      tsb.tetrate.io/workspace: bookinfo-ws
+      tsb.tetrate.io/gatewayGroup: bookinfo-gateway
+  spec:
+    service: bookinfo/reviews.svc.cluster.local
+    portLevelSettings:
+      - port: 8080
+        trafficType: HTTP
+    subsets:
+    - name: stable
+      labels:
+        app: reviews
+        version: stable
+      weight: 100
+    - name: canary
+      labels:
+        app: reviews
+        version: canary
+      weight: 0
