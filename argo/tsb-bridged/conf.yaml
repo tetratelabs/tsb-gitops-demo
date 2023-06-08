@@ -106,7 +106,7 @@ items:
             route:
               host: "bookinfo/productpage.bookinfo.svc.cluster.local"
               port: 9080
-- apiVersion: traffic.xcp.tetrate.io/v2
+- apiVersion: traffic.tsb.tetrate.io/v2
   kind: ServiceRoute
   metadata:
     name: reviews
