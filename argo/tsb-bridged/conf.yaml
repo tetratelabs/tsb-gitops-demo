@@ -116,9 +116,9 @@ items:
       tsb.tetrate.io/organization: tetrate
       tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
-      tsb.tetrate.io/gatewayGroup: bookinfo-gateway
+      tsb.tetrate.io/trafficGroup: bookinfo-gateway
   spec:
-    service: bookinfo/reviews.svc.cluster.local
+    service: bookinfo/reviews.bookinfo.svc.cluster.local
     portLevelSettings:
       - port: 8080
         trafficType: HTTP
