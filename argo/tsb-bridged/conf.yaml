@@ -116,7 +116,7 @@ items:
       tsb.tetrate.io/organization: tetrate
       tsb.tetrate.io/tenant: bookinfo
       tsb.tetrate.io/workspace: bookinfo-ws
-      tsb.tetrate.io/trafficGroup: bookinfo-gateway
+      tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
     service: bookinfo/reviews.bookinfo.svc.cluster.local
     portLevelSettings:
