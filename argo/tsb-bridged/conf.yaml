@@ -119,9 +119,6 @@ items:
       tsb.tetrate.io/trafficGroup: bookinfo-traffic
   spec:
     service: bookinfo/reviews.bookinfo.svc.cluster.local
-    portLevelSettings:
-      - port: 9080
-        trafficType: HTTP
     subsets:
     - name: stable
       labels:
