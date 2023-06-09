@@ -120,7 +120,7 @@ items:
   spec:
     service: bookinfo/reviews.bookinfo.svc.cluster.local
     portLevelSettings:
-      - port: 8080
+      - port: 9080
         trafficType: HTTP
     subsets:
     - name: stable
