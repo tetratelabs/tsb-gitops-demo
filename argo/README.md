@@ -13,7 +13,7 @@ Create a sample application using the below command. An example repository conta
 You can either use Argo CD CLI or their web UI to import application configurations directly from Git.
 
 ```bash{promptUser: "alice"}
-argocd app create bookinfo-app --repo https://github.com/tetrateio/tsb-gitops-demo.git --path application --dest-server https://kubernetes.default.svc --dest-namespace bookinfo --sync-policy automated --auto-prune
+argocd app create bookinfo-app --repo https://github.com/tetrateio/tsb-gitops-demo.git --path application --dest-server https://kubernetes.default.svc --dest-namespace bookinfo --sync-policy automated --auto-prune --self-heal
 ```
 
 Check the status of your application
@@ -70,7 +70,7 @@ Since Argo Rollout require you to make some modifications on Istio `VirtualServi
 Create a `bookinfo-tsb-conf` app by importing the TSB configurations from [tsb-gitops-demo/argo/tsb/conf.yaml](https://github.com/tetrateio/tsb-gitops-demo/blob/main/argo/tsb/conf.yaml). You can also choose to keep it in the same repo. 
 
 ```bash{promptUser: "alice"}
-argocd app create bookinfo-tsb-conf --repo https://github.com/tetrateio/tsb-gitops-demo.git --path argo/tsb --dest-server https://kubernetes.default.svc --dest-namespace bookinfo
+argocd app create bookinfo-tsb-conf --repo https://github.com/tetrateio/tsb-gitops-demo.git --path argo/tsb --dest-server https://kubernetes.default.svc --dest-namespace bookinfo --sync-policy automated --self-heal
 ```
 
 Check the status of TSB resources
@@ -258,7 +258,7 @@ spec:
 Run the below command to create a rollout app
 
 ```bash{promptUser: "alice"}
-argocd app create reviews-rollout --repo https://github.com/tetrateio/tsb-gitops-demo.git --path argo/rollout --dest-server https://kubernetes.default.svc --dest-namespace bookinfo --sync-policy automated --auto-prune
+argocd app create reviews-rollout --repo https://github.com/tetrateio/tsb-gitops-demo.git --path argo/rollout --dest-server https://kubernetes.default.svc --dest-namespace bookinfo --sync-policy automated --self-heal
 ```
 
 Check the status
