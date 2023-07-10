@@ -19,7 +19,7 @@ spec:
         startingStep: 2
         args:
         - name: service-name
-          value: canary|reviews|bookinfo|gke-sreehari-us-east1-1|-
+          value: canary|reviews|bookinfo|gke-sreehari-us-east1-2|-
       canaryMetadata:
         annotations:
           version: canary
