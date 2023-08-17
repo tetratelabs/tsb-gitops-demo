@@ -13,7 +13,7 @@ Create a sample application using the below command. An example repository conta
 You can either use Argo CD CLI or their web UI to import application configurations directly from Git.
 
 ```bash{promptUser: "alice"}
-argocd app create bookinfo-app --repo https://github.com/tetrateio/tsb-gitops-demo.git --path application --dest-server https://kubernetes.default.svc --dest-namespace bookinfo --sync-policy automated --auto-prune
+argocd app create bookinfo-app --repo https://github.com/tetrateio/tsb-gitops-demo.git --path application --dest-server https://kubernetes.default.svc --dest-namespace bookinfo --sync-policy automated
 ```
 
 Check the status of your application
@@ -258,7 +258,7 @@ spec:
 Run the below command to create a rollout app
 
 ```bash{promptUser: "alice"}
-argocd app create reviews-rollout --repo https://github.com/tetrateio/tsb-gitops-demo.git --path argo/rollout --dest-server https://kubernetes.default.svc --dest-namespace bookinfo --sync-policy automated --auto-prune
+argocd app create reviews-rollout --repo https://github.com/tetrateio/tsb-gitops-demo.git --path argo/rollout --dest-server https://kubernetes.default.svc --dest-namespace bookinfo --sync-policy automated
 ```
 
 Check the status
